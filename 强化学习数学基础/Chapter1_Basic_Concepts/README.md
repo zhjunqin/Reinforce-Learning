@@ -105,20 +105,20 @@ $\pi(a|s) = P(A = a|S = s)$
 对于任意状态 $s$，满足：$\sum_{a \in \mathcal{A}} \pi(a|s) = 1$
 
 例如，在网格世界中，Agent 在状态 $s_1$ 下可能采取如下随机策略：
-- 以 0.6 的概率向右移动：$\pi(a_2|s_1) = 0.6$
-- 以 0.3 的概率向下移动：$\pi(a_4|s_1) = 0.3$ 
-- 以 0.1 的概率保持不动：$\pi(a_5|s_1) = 0.1$
-- 向左和向上移动的概率为 0：$\pi(a_1|s_1) = \pi(a_3|s_1) = 0$
+- 以 0.6 的概率向右移动： $\pi(a_2|s_1) = 0.6$
+- 以 0.3 的概率向下移动： $\pi(a_4|s_1) = 0.3$ 
+- 以 0.1 的概率保持不动： $\pi(a_5|s_1) = 0.1$
+- 向左和向上移动的概率为 0： $\pi(a_1|s_1) = \pi(a_3|s_1) = 0$
 
 ## 确定策略（Deterministic policy）
 
 **确定策略（Deterministic policy）** 通常表示为 $\mu$，是一个从状态空间到动作空间的确定性映射：
 
-$\mu: \mathcal{S} \rightarrow \mathcal{A}$
+$$\mu: \mathcal{S} \rightarrow \mathcal{A}$$
 
 表示在状态 $s$ 下，Agent 一定会采取动作 $\mu(s)$。确定策略可以看作是一种特殊的随机策略，即在某个状态下采取某个动作的概率为 1，采取其他动作的概率为 0：
 
-$\pi(a|s) = \begin{cases} 1, & \text{if } a = \mu(s) \\ 0, & \text{otherwise} \end{cases}$
+$$\pi(a|s) = \begin{cases} 1, & \text{if } a = \mu(s) \\ 0, & \text{otherwise} \end{cases}$$
 
 例如，在网格世界中，Agent 在状态 $s_1$ 下可能采取如下确定策略：
 - 一定向右移动：$\mu(s_1) = a_2$
