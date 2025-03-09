@@ -134,7 +134,63 @@ $$\pi(a|s) = \begin{cases} 1, & \text{if } a = \mu(s) \\ 0, & \text{otherwise} \
 ![](./assets/c1_deterministic_policy.png)
 
 
-## 轨迹（trajectory）
+## 奖励（Reward）
+
+**奖励（Reward）** 是指在某个状态下，Agent 执行一个动作而从环境获得的反馈。
+
+奖励通常表示为 $r$，它是状态 $s$ 和动作 $a$ 的函数，即 $r: \mathcal{S} \times \mathcal{A} \rightarrow \mathbb{R}$，表示为 $r(s,a)$。奖励可以是正的也可以是负的，或者是 0。
+
+不同的奖励会对 Agent 学习到的策略有不同的影响。通常情况下，当奖励为正时，会鼓励 Agent 采取对应的动作；当奖励为负时，会抑制 Agent 采取对应的动作。奖励为 0 时，表示该动作对 Agent 的目标没有影响。
+
+在网格世界的例子中，奖励定义可以如下：
+- 当 Agent 尝试穿过边界时：$r_{boundary}=-1$。
+- 当 Agent 尝试进入禁止格子时：$r_{forbidden}=-1$。
+- 当 Agent 到达目标格子时：$r_{target}=-1$。
+- 其他状态下的动作获得奖励：$r_{other}=0$。
+
+网格世界中可以用表格的方式来表示所有状态下的奖励：
+
+![](./assets/c1_table_rewards.png)
+
+## 轨迹（trajectory）和回合（episode）
+
+**轨迹（trajectory）** 是一个 state-action-reward 的链。当遵循一个策略（policy），Agent 采取了一系列的动作，最后到达某个状态而产生的 state-action-reward 链。可以表示为：
+
+$$ (s_1, a_1, r_1, s_2, a_2, r_2, s_3, a_3, r_3, ...) $$
+
+如图（a）所示，Agent 生成的轨迹为：
+
+$$ s_1 \xrightarrow[r=0]{a_2} s_2 \xrightarrow[r=0]{a_3} s_5 \xrightarrow[r=0]{a_3} s_8 \xrightarrow[r=1]{a_2} s_9 $$
+
+![](./assets/c1_trajectory.png)
+
+当遵循一个策略（policy），Agent 采取了一系列的动作和环境互动，最终到达某个终止的状态，这一系列的轨迹称之为**回合（episode）**。
+
+在网格世界的例子中，一个回合就是从起始格子到目标格子的完整路径。回合可以是有限长度的（如网格世界），也可以是无限长度的（如持续性任务）。在网格世界中也可以定义无限长度的轨迹，比如我们可以设计一个策略，在到达 $s_9$ 后不会停止，会不断采取停留在 $s_9$ 的动作，从而产生的轨迹：
+
+$$ s_1 \xrightarrow[r=0]{a_2} s_2 \xrightarrow[r=0]{a_3} s_5 \xrightarrow[r=0]{a_3} s_8 \xrightarrow[r=1]{a_2} s_9 \xrightarrow[r=1]{a_2} s_9 \xrightarrow[r=1]{a_2} s_9 ...$$
+
+## 回报（Return）
+
+**回报（Return）** 是指从当前时刻开始，Agent 在一个轨迹上获得的所有奖励的累加和，所以回报也叫做**累计奖励（cumulative future reward 或 cumulative rewards）**。
+
+通常用 $G_t$ 表示从时刻 $t$ 开始的回报：
+
+$$ G_t = r_{t} + r_{t+1} + r_{t+2} + r_{t+3} + ... $$
+
+在上图（a）中的 Policy 1 的回报为
+
+$$ return = 0 + 0 + 0 + 1 = 1 $$
+
+在上图（b）中的 Policy 2 的回报为
+
+$$ return = 0 + -1 + 0 + 1 = 0 $$
+
+在实际应用中，为了使回报有限，通常会引入**折扣因子（discount rate） $\gamma \in [0,1]$**，使得未来的奖励会被打折：
+
+$$ G_t = r_{t} + \gamma r_{t+1} + \gamma^2 r_{t+2} + ... = \sum_{k=0}^{\infty} \gamma^k r_{t+k} $$
+
+折扣因子 $\gamma$ 越小，Agent 越重视短期奖励；$\gamma$ 越大，Agent 越重视长期奖励。当 $\gamma=0$ 时，Agent 只关注即时奖励；当 $\gamma=1$ 时，所有时刻的奖励权重相同。
 
 
 
