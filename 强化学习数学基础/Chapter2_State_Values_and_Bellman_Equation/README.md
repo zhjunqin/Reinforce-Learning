@@ -76,8 +76,9 @@ v_\pi(s) &= \mathbb{E}_\pi[G_t|S_t=s] \\
   &= \sum_{a \in \mathcal{A}} \pi(a|s) \sum_{s' \in \mathcal{S}} p(s'|s,a) \mathbb{E}_\pi[G_{t+1}|S_{t+1}=s'] \\
   &= \sum_{a \in \mathcal{A}} \pi(a|s) \sum_{s' \in \mathcal{S}} p(s'|s,a) v_\pi(s')
   \end{aligned}$$
-  这里 $\mathcal{S}$ 是所有可能的状态的集合。第二步的转换利用到了马尔可夫性质 $\mathbb{E}_\pi[G_{t+1}|S_t=s, A_t=a, S_{t+1}=s'] = \mathbb{E}_\pi[G_{t+1}|S_{t+1}=s']$。最后一个等式是因为 $\mathbb{E}_\pi[G_{t+1}|S_{t+1}=s']$ 就是状态 $s'$ 的状态价值 $v_\pi(s')$。
-将上面两个等式代入到
+  这里 $\mathcal{S}$ 是所有可能的状态的集合。第二步的转换 $\mathbb{E}_\pi[G_{t+1}|S_t=s, A_t=a, S_{t+1}=s'] = \mathbb{E}_\pi[G_{t+1}|S_{t+1}=s']$ 利用到了马尔可夫性质 。最后一个等式是因为 $\mathbb{E}_\pi[G_{t+1}|S_{t+1}=s']$ 就是状态 $s'$ 的状态价值 $v_\pi(s')$。
+
+将上面两个等式代入到上面的状态价值函数：
 
   $$\begin{aligned}
   v_\pi(s) &= \mathbb{E}_\pi[R_{t+1} |S_t=s] +  \gamma \mathbb{E}_\pi[G_{t+1}|S_t=s] \\
