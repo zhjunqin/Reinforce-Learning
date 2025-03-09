@@ -174,6 +174,8 @@ $$ s_1 \xrightarrow[r=0]{a_2} s_2 \xrightarrow[r=0]{a_3} s_5 \xrightarrow[r=0]{a
 
 **回报（Return）** 是指从当前时刻开始，Agent 在一个轨迹上获得的所有奖励的累加和，所以回报也叫做**累计奖励（cumulative future reward 或 cumulative rewards）**。
 
+因此奖励（Reward）也被称为**即时奖励（immediate reward）**，而**回报（Return）** 是即时奖励的累加和。
+
 通常用 $G_t$ 表示从时刻 $t$ 开始的回报：
 
 $$ G_t = r_{t} + r_{t+1} + r_{t+2} + r_{t+3} + ... $$
@@ -190,8 +192,20 @@ $$ return = 0 + -1 + 0 + 1 = 0 $$
 
 $$ G_t = r_{t} + \gamma r_{t+1} + \gamma^2 r_{t+2} + ... = \sum_{k=0}^{\infty} \gamma^k r_{t+k} $$
 
-折扣因子 $\gamma$ 越小，Agent 越重视短期奖励；$\gamma$ 越大，Agent 越重视长期奖励。当 $\gamma=0$ 时，Agent 只关注即时奖励；当 $\gamma=1$ 时，所有时刻的奖励权重相同。
+折扣因子可以用来调整对近期和远期奖励的重视程度。$\gamma$ 越小，Agent 越重视短期奖励；$\gamma$ 越大，Agent 越重视长期奖励。当 $\gamma=0$ 时，Agent 只关注即时奖励；当 $\gamma=1$ 时，所有时刻的奖励权重相同。
 
+对于网格世界中，在上图（a）中的 Policy 1 无限回合的**折扣回报（discounted return）** 计算如下：
+
+$$ G_t = 0 + \gamma \cdot 0 + \gamma^2 \cdot 0 + \gamma^3 \cdot 1 + \gamma^4 \cdot 1 + \gamma^5 \cdot 1 + ... =  \gamma^3 + \gamma^4 + ... = \gamma^3 \frac{1}{1-\gamma} $$
+
+## 马尔可夫决策过程（Markov decision processes）
+
+马尔可夫决策过程（Markov decision processes，简称为 MDP）是一个描述随机动态系统的通用框架。MDP 的关键因素如下：
+
+- 集合
+  - 状态空间（State space）：所有状态的集合，表示为 $\mathcal{S}$。
+  - 动作空间（Action space）：与每个状态 $ s \in \mathcal{S} $ 相关的动作集合，表示为 $\mathcal{A(s)}$。
+  - 奖励集合（Reward set）：与每一个状态-动作对 $(s, a)$ 相关联的奖励集合，表示为 $\mathcal{R(s,a)}$。
 
 
 ## 参考文献
