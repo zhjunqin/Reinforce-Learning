@@ -61,6 +61,39 @@ G_t &= R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + ... \\
 $$\begin{aligned}
 v_\pi(s) &= \mathbb{E}_\pi[G_t|S_t=s] \\
 &= \mathbb{E}_\pi[R_{t+1} + \gamma G_{t+1}|S_t=s] \\
-&=  \mathbb{E}_\pi[R_{t+1} |S_t=s] +  \gamma \mathbb{E}_\pi[G_{t+1}|S_t=s]
+&= \mathbb{E}_\pi[R_{t+1} |S_t=s] +  \gamma \mathbb{E}_\pi[G_{t+1}|S_t=s]
 \end{aligned}$$
 
+- 方程的第一项 $\mathbb{E}_\pi[R_{t+1} |S_t=s]$ 是**即时奖励的期望值**。使用全期望定理，可以计算为：
+  $$\begin{aligned}
+  \mathbb{E}_\pi[R_{t+1} |S_t=s] &= \sum_{a \in \mathcal{A}} \pi(a|s) \mathbb{E}_\pi[R_{t+1} |S_t=s, A_t=a] \\
+  &= \sum_{a \in \mathcal{A}} \pi(a|s) \sum_{r \in \mathcal{R}} p(r|s,a)r \\
+  \end{aligned}$$
+  这里 $\mathcal{A}$ 和 $\mathcal{R}$ 分别是所有可能的动作和奖励的集合。需要注意的是，对于不同的状态，$\mathcal{A}$ 可能不同。在这种情况下，$\mathcal{A}$ 应写作 $\mathcal{A(s)}$。同样，$\mathcal{R}$ 也可能依赖于 $(s, a)$。这里省略了 $s$ 或 $(s, a)$ 的依赖。
+- 方程的第二项 $\mathbb{E}_\pi[G_{t+1}|S_t=s]$ 是**未来奖励的期望值**。使用全期望定理，可以计算为：
+  $$\begin{aligned}
+  \mathbb{E}_\pi[G_{t+1}|S_t=s] &= \sum_{a \in \mathcal{A}} \pi(a|s) \mathbb{E}_\pi[G_{t+1}|S_t=s, A_t=a] \\
+  &= \sum_{a \in \mathcal{A}} \pi(a|s) \sum_{s' \in \mathcal{S}} p(s'|s,a) \mathbb{E}_\pi[G_{t+1}|S_{t+1}=s'] \\
+  &= \sum_{a \in \mathcal{A}} \pi(a|s) \sum_{s' \in \mathcal{S}} p(s'|s,a) v_\pi(s')
+  \end{aligned}$$
+  这里 $\mathcal{S}$ 是所有可能的状态的集合。第二步的转换利用到了马尔可夫性质 $\mathbb{E}_\pi[G_{t+1}|S_t=s, A_t=a, S_{t+1}=s'] = \mathbb{E}_\pi[G_{t+1}|S_{t+1}=s']$。最后一个等式是因为 $\mathbb{E}_\pi[G_{t+1}|S_{t+1}=s']$ 就是状态 $s'$ 的状态价值 $v_\pi(s')$。
+将上面两个等式代入到
+
+  $$\begin{aligned}
+  v_\pi(s) &= \mathbb{E}_\pi[R_{t+1} |S_t=s] +  \gamma \mathbb{E}_\pi[G_{t+1}|S_t=s] \\
+  &= \sum_{a \in \mathcal{A}} \pi(a|s) \sum_{r \in \mathcal{R}} p(r|s,a)r +  \gamma \sum_{a \in \mathcal{A}} \pi(a|s) \sum_{s' \in \mathcal{S}} p(s'|s,a) v_\pi(s') \\
+  &= \sum_{a \in \mathcal{A}} \pi(a|s) \left(\sum_{r \in \mathcal{R}} p(r|s,a)r + \gamma \sum_{s' \in \mathcal{S}} p(s'|s,a) v_\pi(s')\right), \forall s \in \mathcal{S}
+  \end{aligned}$$
+
+这个方程就是**贝尔曼方程（Bellman Equation）**。它描述了状态价值之间的关系。它是设计和分析强化学习算法的基本工具。
+
+方程说明如下：
+- $v_\pi(s)$ 和 $v_\pi(s')$ 都是待计算的状态价值。这里可能会感到疑惑，因为一个未知的值 $v_\pi(s)$ 依赖于另外一个未知量 $v_\pi(s')$。这里需要注意的是贝尔曼方程是所有状态的一组线性方程，而不是单个方程。当把所有的方程组合起来，就会清楚如何计算所有的状态价值。
+- $\pi(s)$是一个给定的策略。由于状态价值可以用来评估策略，从贝尔曼方程中求解状态价值是一个策略评估的过程，这是许多强化学习算法中的重要过程。
+- $p(r|s,a)$ 和 $p(s'|s,a)$ 表示系统模型。这里的计算需要依赖于知道这些系统模型的概率，也就是知道了系统模型（环境）状态迁移的概率和奖励的概率，因此称之为 **model-based** 的强化学习。后面还会介绍 **model-free** 的强化学习方法。**model-free** 方法不需要事先知道系统的这些概率。
+
+
+
+## 参考文献
+- https://github.com/MathFoundationRL/Book-Mathematical-Foundation-of-Reinforcement-Learning
+- 
