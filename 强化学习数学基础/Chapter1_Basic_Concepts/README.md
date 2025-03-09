@@ -156,7 +156,7 @@ $$\pi(a|s) = \begin{cases} 1, & \text{if } a = \mu(s) \\ 0, & \text{otherwise} \
 
 **轨迹（trajectory）** 是一个 state-action-reward 的链。当遵循一个策略（policy），Agent 采取了一系列的动作，最后到达某个状态而产生的 state-action-reward 链。可以表示为：
 
-$$ (s_1, a_1, r_1, s_2, a_2, r_2, s_3, a_3, r_3, ...) $$
+$$ (s_1, a_1, r_2, s_2, a_2, r_3, s_3, a_3, ...) $$
 
 如图（a）所示，Agent 生成的轨迹为：
 
@@ -190,16 +190,22 @@ $$ return = 0 + -1 + 0 + 1 = 0 $$
 
 在实际应用中，为了使回报有限，通常会引入**折扣因子（discount rate） $\gamma \in [0,1]$**，使得未来的奖励会被打折：
 
-$$ G_t = r_{t} + \gamma r_{t+1} + \gamma^2 r_{t+2} + ... = \sum_{k=0}^{\infty} \gamma^k r_{t+k} $$
+$$ \begin{aligned}
+G_t &= r_{t+1} + \gamma r_{t+2} + \gamma^2 r_{t+3} + ... \\
+    &= \sum_{k=0}^{\infty} \gamma^k r_{t+k}
+\end{aligned} $$
 
 折扣因子可以用来调整对近期和远期奖励的重视程度。$\gamma$ 越小，Agent 越重视短期奖励；$\gamma$ 越大，Agent 越重视长期奖励。当 $\gamma=0$ 时，Agent 只关注即时奖励；当 $\gamma=1$ 时，所有时刻的奖励权重相同。
 
 对于网格世界中，在上图（a）中的 Policy 1 无限回合的**折扣回报（discounted return）** 计算如下：
 
-$$ G_t = 0 + \gamma \cdot 0 + \gamma^2 \cdot 0 + \gamma^3 \cdot 1 + \gamma^4 \cdot 1 + \gamma^5 \cdot 1 + ... =  \gamma^3 + \gamma^4 + ... = \gamma^3 \frac{1}{1-\gamma} $$
+$$ \begin{aligned}
+G_t &= 0 + \gamma \cdot 0 + \gamma^2 \cdot 0 + \gamma^3 \cdot 1 + \gamma^4 \cdot 1 + ... \\
+    &= \gamma^3 + \gamma^4 + ... \\
+    &= \gamma^3 \frac{1}{1-\gamma}
+\end{aligned} $$
 
-强化学习的目标就是寻找一个策略，使得回报的期望最大化。这个策略称为**最
-优策略 (optimum policy)**。
+强化学习的目标就是寻找一个策略，使得回报的期望最大化。这个策略称为**最优策略 (optimum policy)**。
 
 ## 马尔可夫决策过程（Markov decision processes）
 
