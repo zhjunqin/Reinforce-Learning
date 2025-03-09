@@ -220,6 +220,11 @@ $$ G_t = 0 + \gamma \cdot 0 + \gamma^2 \cdot 0 + \gamma^3 \cdot 1 + \gamma^4 \cd
   $ p(r_{t+1}| s_t,a_t,s_{t-1},a_{t-1},...,s_0,a_0) = p(r_{t+1}| s_t,a_t)$
   其中 $t$ 表示当前时间时刻，$t+1$ 表示下一个时刻。这意味着系统的下一个状态或奖励只取决于当前状态和当前动作，而与历史状态和动作无关。这大大简化了问题的复杂度，因为我们只需要考虑当前状态，而不需要记住整个历史轨迹。
 
+最终，强化学习可以被描述为一个 Agent 与环境交互的过程。Agent 是一个决策者，它可以感知其状态、维护策略并执行动作。Agent 之外的一切都被视为环境。
+
+![](./assets/c1_agent_env2.png)
+
+在网格世界示例中，Agent 和环境分别对应于机器人和网格世界。在 Agent 决定采取一个动作之后，执行器执行这样的决策。然后，Agent 的状态会发生变化，并且可以获得奖励。通过使用解释器，Agent 可以解释新的状态和奖励。因此，可以形成一个闭环。
 
 ## 参考文献
 - https://github.com/MathFoundationRL/Book-Mathematical-Foundation-of-Reinforcement-Learning
@@ -227,3 +232,4 @@ $$ G_t = 0 + \gamma \cdot 0 + \gamma^2 \cdot 0 + \gamma^3 \cdot 1 + \gamma^4 \cd
 - https://en.wikipedia.org/wiki/Reinforcement_learning
 - https://github.com/wangshusen/DRL?tab=readme-ov-file
 - https://spinningup.openai.com/en/latest/spinningup/rl_intro.html
+- http://incompleteideas.net/book/RLbook2020.pdf
