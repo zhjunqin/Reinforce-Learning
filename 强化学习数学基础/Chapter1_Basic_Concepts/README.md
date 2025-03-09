@@ -98,7 +98,7 @@ $p(s_i|s_1,a_2) = 0, i \neq 2,4$
 
 **随机策略（Stochastic policy）** 通常表示为 $\pi$，
 
-$\pi$: $\mathcal{S} \times \mathcal{A} \rightarrow [0,1]$，是一个条件概率分布：
+$\pi: \mathcal{S} \times \mathcal{A} \rightarrow [0,1]$，是一个条件概率分布：
 
 $$ \pi(a|s) = P(A = a|S = s) $$
 
@@ -172,7 +172,7 @@ $$ s_1 \xrightarrow[r=0]{a_2} s_2 \xrightarrow[r=0]{a_3} s_5 \xrightarrow[r=0]{a
 
 ## 回报（Return）
 
-**回报（Return）** 是指从当前时刻开始，Agent 在一个轨迹上获得的所有奖励的累加和，所以回报也叫做**累计奖励（cumulative future reward 或 cumulative rewards）**。
+**回报（Return）** 是指从当前时刻开始，Agent 在一个轨迹上获得的所有奖励的累加和，所以回报也叫做**累计奖励（cumulative future reward 或 cumulative reward）**。
 
 因此奖励（Reward）也被称为**即时奖励（immediate reward）**，而**回报（Return）** 是即时奖励的累加和。
 
@@ -198,14 +198,27 @@ $$ G_t = r_{t} + \gamma r_{t+1} + \gamma^2 r_{t+2} + ... = \sum_{k=0}^{\infty} \
 
 $$ G_t = 0 + \gamma \cdot 0 + \gamma^2 \cdot 0 + \gamma^3 \cdot 1 + \gamma^4 \cdot 1 + \gamma^5 \cdot 1 + ... =  \gamma^3 + \gamma^4 + ... = \gamma^3 \frac{1}{1-\gamma} $$
 
+强化学习的目标就是寻找一个策略，使得回报的期望最大化。这个策略称为**最
+优策略 (optimum policy)**。
+
 ## 马尔可夫决策过程（Markov decision processes）
 
-马尔可夫决策过程（Markov decision processes，简称为 MDP）是一个描述随机动态系统的通用框架。MDP 的关键因素如下：
+**马尔可夫决策过程（Markov decision processes，简称为 MDP）** 是一个描述随机动态系统的通用框架。MDP 的关键因素如下：
 
-- 集合
+- 集合（Sets）
   - 状态空间（State space）：所有状态的集合，表示为 $\mathcal{S}$。
   - 动作空间（Action space）：与每个状态 $ s \in \mathcal{S} $ 相关的动作集合，表示为 $\mathcal{A(s)}$。
   - 奖励集合（Reward set）：与每一个状态-动作对 $(s, a)$ 相关联的奖励集合，表示为 $\mathcal{R(s,a)}$。
+- 模型（Model）
+  - 状态转移概率（State transition probability）：在状态 $s$ 下，采取动作 $a$ 时，转移到状态 $s'$ 的概率是 $p(s'|s, a)$。对任意 $(s,a)$， 满足 $\sum_{s' \in \mathcal{S}} p(s'|s, a)=1 $。
+  - 奖励概率（Reward probability）：在状态 $s$ 下，采取动作 $a$ 时，获得奖励 $r$ 的概率是 $p(r|s,a)$。对于任意 $(s,a)$ ，满足 $\sum_{r' \in \mathcal{R(s,a)}} p(r|s, a)=1$。
+- 策略（Policy）
+  - 在状态 $s$ 下，选择动作 $a$ 的概率是 $\pi(a|s)$。同时对于所有的 $s\in \mathcal{S}$，满足$\sum_{a \in \mathcal{A(s)}} p(a|s)=1$。
+- 马尔可夫性质（Markov property）
+  - 马尔可夫性质指的是随机过程的无记忆性性质。在数学上，它表示为
+  $ p(s_{t+1}| s_t,a_t,s_{t-1},a_{t-1},...,s_0,a_0) = p(s_{t+1}| s_t,a_t)$
+  $ p(r_{t+1}| s_t,a_t,s_{t-1},a_{t-1},...,s_0,a_0) = p(r_{t+1}| s_t,a_t)$
+  其中 $t$ 表示当前时间时刻，$t+1$ 表示下一个时刻。这意味着系统的下一个状态或奖励只取决于当前状态和当前动作，而与历史状态和动作无关。这大大简化了问题的复杂度，因为我们只需要考虑当前状态，而不需要记住整个历史轨迹。
 
 
 ## 参考文献
