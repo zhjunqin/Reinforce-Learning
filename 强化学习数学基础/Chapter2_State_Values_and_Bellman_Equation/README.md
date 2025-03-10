@@ -80,11 +80,11 @@ v_\pi(s) &= \mathbb{E}_\pi[G_t|S_t=s] \\
 
 将上面两个等式代入到上面的状态价值函数：
 
-  $$\begin{aligned}
-  v_\pi(s) &= \mathbb{E}_\pi[R_{t+1} |S_t=s] +  \gamma \mathbb{E}_\pi[G_{t+1}|S_t=s] \\
-  &= \sum_{a \in \mathcal{A}} \pi(a|s) \sum_{r \in \mathcal{R}} p(r|s,a)r +  \gamma \sum_{a \in \mathcal{A}} \pi(a|s) \sum_{s' \in \mathcal{S}} p(s'|s,a) v_\pi(s') \\
-  &= \sum_{a \in \mathcal{A}} \pi(a|s) \left(\sum_{r \in \mathcal{R}} p(r|s,a)r + \gamma \sum_{s' \in \mathcal{S}} p(s'|s,a) v_\pi(s')\right), \forall s \in \mathcal{S}
-  \end{aligned}$$
+$$\begin{aligned}
+v_\pi(s) &= \mathbb{E}_\pi[R_{t+1} |S_t=s] +  \gamma \mathbb{E}_\pi[G_{t+1}|S_t=s] \\
+&= \sum_{a \in \mathcal{A}} \pi(a|s) \sum_{r \in \mathcal{R}} p(r|s,a)r +  \gamma \sum_{a \in \mathcal{A}} \pi(a|s) \sum_{s' \in \mathcal{S}} p(s'|s,a) v_\pi(s') \\
+&= \sum_{a \in \mathcal{A}} \pi(a|s) \left(\sum_{r \in \mathcal{R}} p(r|s,a)r + \gamma \sum_{s' \in \mathcal{S}} p(s'|s,a) v_\pi(s')\right), \forall s \in \mathcal{S}
+\end{aligned}$$
 
 这个方程就是**贝尔曼方程（Bellman Equation）**。它描述了状态价值之间的关系。它是设计和分析强化学习算法的基本工具。
 
@@ -92,6 +92,269 @@ v_\pi(s) &= \mathbb{E}_\pi[G_t|S_t=s] \\
 - $v_\pi(s)$ 和 $v_\pi(s')$ 都是待计算的状态价值。这里可能会感到疑惑，因为一个未知的值 $v_\pi(s)$ 依赖于另外一个未知量 $v_\pi(s')$。这里需要注意的是贝尔曼方程是所有状态的一组线性方程，而不是单个方程。当把所有的方程组合起来，就会清楚如何计算所有的状态价值。
 - $\pi(s)$是一个给定的策略。由于状态价值可以用来评估策略，从贝尔曼方程中求解状态价值是一个策略评估的过程，这是许多强化学习算法中的重要过程。
 - $p(r|s,a)$ 和 $p(s'|s,a)$ 表示系统模型。这里的计算需要依赖于知道这些系统模型的概率，也就是知道了系统模型（环境）状态迁移的概率和奖励的概率，因此称之为 **model-based** 的强化学习。后面还会介绍 **model-free** 的强化学习方法，**model-free** 的方法不需要事先知道系统模型的这些概率。
+
+
+## 贝尔曼方程的例子
+
+- 考虑如下图中的网格世界，示例图中的策略是确定性的。
+
+![](./assets/chapter2_bellman_example.png)
+
+计算状态 $s_1$ 的状态价值 $v_\pi(s_1)$。 
+
+状态 $s_1$ 下只会采取向下的动作 $a_3$，因此：
+
+$\pi(a=a_3|s_1) = 1$
+$\pi(a \neq a_3|s_1) = 0$
+
+采取动作 $a_3$ 后的状态迁移概率只会往 $s_3$，因此：
+
+$p(s'=s_3|s_1, a_3) = 1$
+$p(s' \neq s_3|s_1, a_3) = 0$
+
+奖励为 0 概率为 1，其他为 0：
+
+$p(r = 0|s_1, a_3) = 1$
+$p(r \neq 0|s_1, a_3) = 0$
+
+可以得到 $v_\pi(s_1)$：
+
+$$v_\pi(s_1) = \pi(a=a_3|s_1) ( 0 + \gamma v_\pi(s_3)) = 0 + \gamma v_\pi(s_3) $$
+
+同样可以得到：
+
+$$\begin{aligned}
+v_\pi(s_2) &= 1 + \gamma v_\pi(s_4)  \\
+v_\pi(s_3) &= 1 + \gamma v_\pi(s_4)  \\
+v_\pi(s_4) &= 1 + \gamma v_\pi(s_4)  \\
+\end{aligned}$$
+
+通过求解可以得到：
+
+$$ v_\pi(s_4) = 1 + \gamma v_\pi(s_4) $$
+
+$$ v_\pi(s_4) = \frac{1}{1-\gamma} $$
+
+代入得到：
+
+$$ v_\pi(s_2) = v_\pi(s_3) = 1 + \gamma \frac{1}{1-\gamma} = \frac{1}{1-\gamma} $$
+
+$$ v_\pi(s_1) = \gamma \frac{1}{1-\gamma} $$
+
+如果设置 $\gamma = 0.9$，则可以得到：
+
+$$\begin{aligned}
+v_\pi(s_4) = v_\pi(s_2) = v_\pi(s_3) = \frac{1}{1-0.9} = 10 \\
+v_\pi(s_1) = 0.9 \cdot \frac{1}{1-0.9} = 9 
+\end{aligned}$$
+
+- 考虑如下图中的网格世界，图中在状态 $s_1$ 下的策略是随机的。
+
+![](./assets/chapter2_bellman_example2.png)
+
+状态 $s_1$ 下的有 $0.5$ 的概率选择向右，$0.5$ 的概率选择向下，则可以计算得到 $v_\pi(s_1)$：
+
+$$ \begin{aligned}
+v_\pi(s_1) &= \pi(a=a_2|s_1) (-1 + \gamma v_\pi(s_2)) + \pi(a=a_3|s_1) (0 + \gamma v_\pi(s_3)) \\
+&= 0.5 \cdot (-1 + \gamma v_\pi(s_2)) + 0.5 \cdot  (0 + \gamma v_\pi(s_3)) 
+\end{aligned} $$
+
+同样可以得到：
+
+$$\begin{aligned}
+v_\pi(s_2) &= 1 + \gamma v_\pi(s_4)  \\
+v_\pi(s_3) &= 1 + \gamma v_\pi(s_4)  \\
+v_\pi(s_4) &= 1 + \gamma v_\pi(s_4)  \\
+\end{aligned}$$
+
+求解以上等式可以得到：
+
+$$ v_\pi(s_4) = 1 + \gamma v_\pi(s_4) $$
+
+$$ v_\pi(s_4) = \frac{1}{1-\gamma} $$
+
+代入得到：
+
+$$ v_\pi(s_2) = v_\pi(s_3) = 1 + \gamma \frac{1}{1-\gamma} = \frac{1}{1-\gamma} $$
+
+$$ v_\pi(s_1) = 0.5 \cdot (-1 + \gamma \frac{1}{1-\gamma}) + 0.5 \cdot (\gamma \frac{1}{1-\gamma}) = -0.5 + \gamma \frac{1}{1-\gamma} $$
+
+如果设置 $\gamma = 0.9$，则可以得到：
+
+$$\begin{aligned}
+v_\pi(s_4) = v_\pi(s_2) = v_\pi(s_3) = \frac{1}{1-0.9} = 10 \\
+v_\pi(s_1) = -0.5 + 0.9 \cdot \frac{1}{1-0.9} = -0.5 + 9 = 8.5
+\end{aligned}$$
+
+通过比较以上两种策略的状态价值，可以看到：
+
+$$ v_{\pi_1}(s_i) \geq v_{\pi_2}(s_i), \quad i=1,2,3,4 $$
+
+表明策略 $1$ 优于策略 $2$。
+
+## 贝尔曼方程的矩阵形式
+
+将原始方程
+
+$$ v_\pi(s) = \sum_{a \in \mathcal{A}} \pi(a|s) \left(\sum_{r \in \mathcal{R}} p(r|s,a)r + \gamma \sum_{s' \in \mathcal{S}} p(s'|s,a) v_\pi(s')\right) $$
+
+改写为
+$$ v_\pi(s) = r_\pi(s) + \gamma \sum_{s' \in \mathcal{S}} p(s'|s) v_\pi(s') $$
+
+其中：
+$$\begin{aligned}
+ r_\pi(s) = \sum_{a \in \mathcal{A}} \pi(a|s) \sum_{r \in \mathcal{R}} p(r|s,a)r \\
+p_\pi(s'|s) = \sum_{a \in \mathcal{A}} \pi(a|s)  p(s'|s,a) 
+\end{aligned}$$
+
+$r_\pi(s)$ 表示即时奖励的均值，$p(s'|s)$ 表示从状态 $s$ 转移到 $s'$ 下的概率。
+
+假定状态有 $n =|\mathcal{S}| $ 个状态，表示为 $s_i$，其中 $i=1,...n$，则对于每一个 $s_i$
+
+$$ v_\pi(s_i) = r_\pi(s_i) + \gamma \sum_{s_j \in \mathcal{S}} p(s_j|s_i) v_\pi(s_j) $$
+
+定义向量 
+$$v_\pi=[v_\pi(s_i), ..., v_\pi(s_n)]^T \in \mathbb{R^n}$$
+
+向量 
+$$r_\pi=[r_\pi(s_i), ..., r_\pi(s_n)]^T \in \mathbb{R^n}$$
+
+矩阵 
+
+$$P_\pi \in \mathbb{R^{n \times n}}, \quad [P_\pi]_{ij} = p_\pi(s_j|s_i) $$
+
+则方程可以改写成矩阵-向量的形式：
+
+$$ v_\pi = r_\pi + \gamma P_\pi v_\pi $$
+
+其中矩阵 $P_\pi$ 是一个非负矩阵，同时矩阵中每一行的总和为 $0$。
+
+![](./assets/chapter2_bellman_matrix.png)
+
+
+## 求解贝尔曼方程
+
+### 封闭形式解（Closed-form solution）
+通过对矩阵
+
+$$ v_\pi = r_\pi + \gamma P_\pi v_\pi $$ 
+
+求逆可以得到：
+
+$$ v_\pi = (I - \gamma P_\pi)^{-1} r_\pi$$
+
+这个方法需要对矩阵进行求逆，在实际中不太适用。
+
+### 迭代解（Iterative solution）
+可以通过如下迭代算法来求解贝尔曼方程：
+
+$$ v_{k+1} = r_\pi + \gamma P_\pi v_k, \quad k=0,1,2,... $$ 
+
+该算法生成一个值序列 $\{ v_0, v_1, v_2, ...\}$，其中 $v_0$ 是一个初始的猜测值。当 $k$ 趋于无穷大时， $v_k$ 趋近于真实的 $v_\pi$ 值：
+
+$$ v_k \rightarrow v_\pi = (I - \gamma P_\pi)^{-1} r_\pi, \quad k \rightarrow  \infty $$
+
+证明参见书中。
+
+#### 示例
+
+这里给出如下示例的贝尔曼方程的迭代求解。
+
+![](./assets/chapter2_bellman_solution1.png)
+
+```
+import numpy as np
+
+# 定义网格世界的大小和参数
+grid_size = (5, 5)
+gamma = 0.9  # 折扣因子
+reward_default = -1  # 默认奖励（黄色格子或尝试到边界外）
+reward_goal = 1  # 蓝色目标格子的奖励
+epsilon = 1e-5  # 收敛阈值
+
+# 初始化奖励矩阵
+rewards = np.array([
+    [0, 0, 0, 0, 0],   # 第一行
+    [0, -1, -1, 0, 0], # 第二行
+    [0, 0, -1, 0, 0],  # 第三行
+    [0, -1, 1, -1, 0], # 第四行
+    [0, -1, 0, 0, 0],  # 第五行
+])
+
+# 定义动作空间
+actions = {
+    "up": (-1, 0),
+    "down": (1, 0),
+    "left": (0, -1),
+    "right": (0, 1),
+    "stay": (0, 0),
+}
+
+# 根据图片定义策略（每个格子对应的动作）
+policy = {
+    (0, 0): "right", (0, 1): "right", (0, 2): "right", (0, 3): "down", (0, 4): "down",
+    (1, 0): "up", (1, 1): "up", (1, 2): "right", (1, 3): "down", (1, 4): "down",
+    (2, 0): "up", (2, 1): "left",   (2, 2): "down",   (2, 3): "right", (2, 4): "down",
+    (3, 0): "up", (3, 1): "right", (3, 2): "stay",(3, 3): "left",   (3, 4): "down",
+    (4, 0): "up", (4, 1): "right",   (4, 2): "up",   (4, 3): "left",     (4, 4): "left",
+}
+
+# 初始化价值函数矩阵
+value_function = np.zeros(grid_size)
+
+# 辅助函数：获取下一个状态和奖励
+def get_next_state_and_reward(state, action):
+    i, j = state
+    di, dj = actions[action]
+    next_i, next_j = i + di, j + dj
+
+    # 检查边界条件，如果越界则保持原地并给予默认奖励
+    if next_i < 0 or next_i >= grid_size[0] or next_j < 0 or next_j >= grid_size[1]:
+        return state, reward_default
+
+    return (next_i, next_j), rewards[next_i][next_j]
+
+# 贝尔曼方程的迭代求解
+def value_iteration():
+    global value_function
+    while True:
+        new_value_function = np.copy(value_function)
+        delta = 0
+
+        for i in range(grid_size[0]):
+            for j in range(grid_size[1]):
+                state = (i, j)
+                action = policy[state]  # 根据策略选择动作
+                next_state, reward = get_next_state_and_reward(state, action)
+
+                # 更新价值函数
+                new_value_function[i][j] = reward + gamma * value_function[next_state]
+
+                # 更新最大变化量
+                delta = max(delta, abs(new_value_function[i][j] - value_function[i][j]))
+
+        value_function = new_value_function
+
+        # 如果变化量小于阈值，则认为收敛，退出迭代
+        if delta < epsilon:
+            break
+
+# 执行价值迭代
+value_iteration()
+
+# 输出最终的价值函数矩阵
+print("最终的价值函数矩阵：")
+print(np.round(value_function, decimals=1))
+```
+
+```
+最终的价值函数矩阵：
+[[ 3.5  3.9  4.3  4.8  5.3]
+ [ 3.1  3.5  4.8  5.3  5.9]
+ [ 2.8  2.5 10.   5.9  6.6]
+ [ 2.5 10.  10.  10.   7.3]
+ [ 2.3  9.  10.   9.   8.1]]
+```
 
 
 
