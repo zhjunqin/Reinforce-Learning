@@ -65,17 +65,21 @@ v_\pi(s) &= \mathbb{E}_\pi[G_t|S_t=s] \\
 \end{aligned}$$
 
 - 方程的第一项 $\mathbb{E}_\pi[R_{t+1} |S_t=s]$ 是**即时奖励的期望值**。使用全期望定理，可以计算为：
+  
   $$\begin{aligned}
   \mathbb{E}_\pi[R_{t+1} |S_t=s] &= \sum_{a \in \mathcal{A}} \pi(a|s) \mathbb{E}_\pi[R_{t+1} |S_t=s, A_t=a] \\
   &= \sum_{a \in \mathcal{A}} \pi(a|s) \sum_{r \in \mathcal{R}} p(r|s,a)r \\
   \end{aligned}$$
+  
   这里 $\mathcal{A}$ 和 $\mathcal{R}$ 分别是所有可能的动作和奖励的集合。需要注意的是，对于不同的状态，$\mathcal{A}$ 可能不同。在这种情况下，$\mathcal{A}$ 应写作 $\mathcal{A(s)}$。同样，$\mathcal{R}$ 也可能依赖于 $(s, a)$。这里省略了 $s$ 或 $(s, a)$ 的依赖。
 - 方程的第二项 $\mathbb{E}_\pi[G_{t+1}|S_t=s]$ 是**未来奖励的期望值**。使用全期望定理，可以计算为：
+  
   $$\begin{aligned}
   \mathbb{E}_\pi[G_{t+1}|S_t=s] &= \sum_{a \in \mathcal{A}} \pi(a|s) \mathbb{E}_\pi[G_{t+1}|S_t=s, A_t=a] \\
   &= \sum_{a \in \mathcal{A}} \pi(a|s) \sum_{s' \in \mathcal{S}} p(s'|s,a) \mathbb{E}_\pi[G_{t+1}|S_{t+1}=s'] \\
   &= \sum_{a \in \mathcal{A}} \pi(a|s) \sum_{s' \in \mathcal{S}} p(s'|s,a) v_\pi(s')
   \end{aligned}$$
+
   这里 $\mathcal{S}$ 是所有可能的状态的集合。第二步的转换 $\mathbb{E}_\pi[G_{t+1}|S_t=s, A_t=a, S_{t+1}=s'] = \mathbb{E}_\pi[G_{t+1}|S_{t+1}=s']$ 利用到了马尔可夫性质 。最后一个等式是因为 $\mathbb{E}_\pi[G_{t+1}|S_{t+1}=s']$ 就是状态 $s'$ 的状态价值 $v_\pi(s')$。
 
 将上面两个等式代入到上面的状态价值函数：
@@ -199,9 +203,11 @@ $$ v_{\pi_1}(s_i) \geq v_{\pi_2}(s_i), \quad i=1,2,3,4 $$
 $$ v_\pi(s) = \sum_{a \in \mathcal{A}} \pi(a|s) \left(\sum_{r \in \mathcal{R}} p(r|s,a)r + \gamma \sum_{s' \in \mathcal{S}} p(s'|s,a) v_\pi(s')\right) $$
 
 改写为
+
 $$ v_\pi(s) = r_\pi(s) + \gamma \sum_{s' \in \mathcal{S}} p(s'|s) v_\pi(s') $$
 
 其中：
+
 $$\begin{aligned}
  r_\pi(s) = \sum_{a \in \mathcal{A}} \pi(a|s) \sum_{r \in \mathcal{R}} p(r|s,a)r \\
 p_\pi(s'|s) = \sum_{a \in \mathcal{A}} \pi(a|s)  p(s'|s,a) 
@@ -214,9 +220,11 @@ $r_\pi(s)$ 表示即时奖励的均值，$p(s'|s)$ 表示从状态 $s$ 转移到
 $$ v_\pi(s_i) = r_\pi(s_i) + \gamma \sum_{s_j \in \mathcal{S}} p(s_j|s_i) v_\pi(s_j) $$
 
 定义向量 
+
 $$v_\pi=[v_\pi(s_i), ..., v_\pi(s_n)]^T \in \mathbb{R^n}$$
 
 向量 
+
 $$r_\pi=[r_\pi(s_i), ..., r_\pi(s_n)]^T \in \mathbb{R^n}$$
 
 矩阵 
