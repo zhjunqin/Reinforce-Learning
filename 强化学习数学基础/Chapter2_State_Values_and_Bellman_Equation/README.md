@@ -320,21 +320,17 @@ def value_iteration():
     while True:
         new_value_function = np.copy(value_function)
         delta = 0
-
         for i in range(grid_size[0]):
             for j in range(grid_size[1]):
                 state = (i, j)
                 action = policy[state]  # 根据策略选择动作
                 next_state, reward = get_next_state_and_reward(state, action)
-
                 # 更新价值函数
                 new_value_function[i][j] = reward + gamma * value_function[next_state]
-
                 # 更新最大变化量
                 delta = max(delta, abs(new_value_function[i][j] - value_function[i][j]))
 
         value_function = new_value_function
-
         # 如果变化量小于阈值，则认为收敛，退出迭代
         if delta < epsilon:
             break
