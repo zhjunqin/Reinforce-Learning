@@ -70,7 +70,7 @@ v_\pi(s) &= \mathbb{E}_\pi[G_t|S_t=s] \\
   \mathbb{E}_\pi[R_{t+1} |S_t=s] &= \sum_{a \in \mathcal{A}} \pi(a|s) \mathbb{E}_\pi[R_{t+1} |S_t=s, A_t=a] \\
   &= \sum_{a \in \mathcal{A}} \pi(a|s) \sum_{r \in \mathcal{R}} p(r|s,a)r \\
   \end{aligned}$$
-  
+
   这里 $\mathcal{A}$ 和 $\mathcal{R}$ 分别是所有可能的动作和奖励的集合。需要注意的是，对于不同的状态，$\mathcal{A}$ 可能不同。在这种情况下，$\mathcal{A}$ 应写作 $\mathcal{A(s)}$。同样，$\mathcal{R}$ 也可能依赖于 $(s, a)$。这里省略了 $s$ 或 $(s, a)$ 的依赖。
 - 方程的第二项 $\mathbb{E}_\pi[G_{t+1}|S_t=s]$ 是**未来奖励的期望值**。使用全期望定理，可以计算为：
   
@@ -360,6 +360,35 @@ print(np.round(value_function, decimals=1))
  [ 2.3  9.  10.   9.   8.1]]
 ```
 
+## 动作价值（action value）
+
+这里引入动作价值函数。一个状态-动作（state-action）对 $(s, a)$ 的动作价值定义为：
+
+$$q_\pi(s,a) = \mathbb{E}_\pi[G_{t}|S_t=s, A_t=a]$$
+
+理解为，在某个状态 $s$ 下采取动作 $a$ 获得回报的期望。
+
+需要注意的是 $q_\pi(s,a)$ 依赖于状态-动作（state-action）对，而不是只有动作。严格上来讲，应该称之为状态-动作价值。
+
+状态价值和动作价值的关系是什么？
+
+两者之间符合条件期望的性质：
+
+$$ \mathbb{E}_\pi[G_{t}|S_t=s] = \sum_{a \in \mathcal{A}}  \pi(a|s) \mathbb{E}_\pi[G_{t}|S_t=s, A_t=a] $$
+
+因此可以得到：
+
+$$ v_\pi(s) = \sum_{a \in \mathcal{A}} \pi(a|s) q_\pi(s,a) $$
+
+另外由于 $v_\pi(s)$ 的等式
+
+$$ v_\pi(s) = \sum_{a \in \mathcal{A}} \pi(a|s) \left(\sum_{r \in \mathcal{R}} p(r|s,a)r + \gamma \sum_{s' \in \mathcal{S}} p(s'|s,a) v_\pi(s')\right) $$
+
+可以得到
+
+$$ q_\pi(s,a) = \sum_{r \in \mathcal{R}} p(r|s,a)r + \gamma \sum_{s' \in \mathcal{S}} p(s'|s,a) v_\pi(s') $$
+
+第一部分是即时奖励的平均值，第二部分是未来奖励的平均值。
 
 
 ## 参考文献
