@@ -6,7 +6,7 @@
 
 ## 章节目录
 
-- [Chapter1: 基本概念](./Chapter1_Basic_Concepts/README.md)
-- [Chapter2: 状态价值和贝尔曼方程](./Chapter2_State_Values_and_Bellman_Equation/README.md)
-- 贝尔曼最优公式(Bellman Optimaltiy Equation)
+- [Chapter1: 基本概念](./Chapter1/README.md)
+- [Chapter2: 状态价值和贝尔曼方程](./Chapter2/README.md)
+- [Chapter3: 最优状态价值和贝尔曼最优方程](./Chapter3/RAEDME.md)
 

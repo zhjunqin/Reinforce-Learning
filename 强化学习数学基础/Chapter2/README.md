@@ -423,4 +423,3 @@ $$q_{\pi} = \tilde{r} + \gamma P\Pi q_{\pi} $$
 
 ## 参考文献
 - https://github.com/MathFoundationRL/Book-Mathematical-Foundation-of-Reinforcement-Learning
-- 
