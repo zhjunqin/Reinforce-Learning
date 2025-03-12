@@ -366,19 +366,27 @@ print(np.round(value_function, decimals=1))
 
 $$q_\pi(s,a) = \mathbb{E}_\pi[G_{t}|S_t=s, A_t=a]$$
 
-理解为，在某个状态 $s$ 下采取动作 $a$ 获得回报的期望。
+理解为，在策略 $\pi$ 中某个状态 $s$ 下采取动作 $a$ 获得回报的期望。
 
-需要注意的是 $q_\pi(s,a)$ 依赖于状态-动作（state-action）对，而不是只有动作。严格上来讲，应该称之为状态-动作价值。
+值得注意：
+- 其中条件 $A_t=a$ 是关键——它表示在状态 $s$ 必须选择动作 $a$，后续动作则按策略 $\pi$ 的概率选择。
+- 动作价值函数 $q_\pi(s,a)$ 的计算与策略  $\pi$ 在状态 $s$ 下是否选择 $a$ 无关，其核心是评估“假设第一步选 $a$ 后的期望回报。策略  $\pi$ 的作用仅体现在后续状态的动作选择中。
+- $q_\pi(s,a)$ 依赖于状态-动作（state-action）对，而不是只有动作。严格上来讲，应该称之为状态-动作价值。
+
+一个在网格世界里面的采样计算示例，假定要计算策略 $\pi$ 在状态 $s_1$ 下采取动作 $a1$ 的回报期望，则从 $s_1$ 固定采取动作 $a_1$，获得奖励，然后根据策略 $\pi$ 选择后续动作，直到终止状态，得到当前轨迹的回报，如此反复一定的采样次数，获得多个轨迹的回报后取均值。
+
 
 状态价值和动作价值的关系是什么？
 
-两者之间符合条件期望的性质：
+两者之间符合条件期望的性质（通过条件期望的全概率分解）：
 
 $$ \mathbb{E}_\pi[G_{t}|S_t=s] = \sum_{a \in \mathcal{A}}  \pi(a|s) \mathbb{E}_\pi[G_{t}|S_t=s, A_t=a] $$
 
 因此可以得到：
 
 $$ v_\pi(s) = \sum_{a \in \mathcal{A}} \pi(a|s) q_\pi(s,a) $$
+
+可以理解为从状态 $s$ 出发，将所有可能的动作 $a$ 对应的回报期望 $\pi(a|s) \cdot q_\pi(s,a)$ 相加，即得到整体状态价值 $v_\pi(s)$。
 
 另外由于 $v_\pi(s)$ 的等式
 
@@ -390,6 +398,28 @@ $$ q_\pi(s,a) = \sum_{r \in \mathcal{R}} p(r|s,a)r + \gamma \sum_{s' \in \mathca
 
 第一部分是即时奖励的平均值，第二部分是未来奖励的平均值。
 
+
+## 动作价值的贝尔曼方程
+
+将 
+
+$$ v_\pi(s') = \sum_{a' \in \mathcal{A}} \pi(a'|s') q_\pi(s',a') $$
+
+代入到方程中
+
+$$ q_\pi(s,a) = \sum_{r \in \mathcal{R}} p(r|s,a)r + \gamma \sum_{s' \in \mathcal{S}} p(s'|s,a) v_\pi(s') $$
+
+得到
+
+$$ q_\pi(s,a) = \sum_{r \in \mathcal{R}} p(r|s,a)r + \gamma \sum_{s' \in \mathcal{S}} p(s'|s,a) \sum_{a' \in \mathcal{A(s')}} \pi(a'|s') q_\pi(s',a') $$
+
+这就是动作价值方程。 将所有的方程放到一起，得到矩阵-向量的形式：
+
+$$q_{\pi} = \tilde{r} + \gamma P\Pi q_{\pi} $$
+
+其中 $q_{\pi}$ 动作价值向量，$ [q_{\pi}]_{(s,a)} = q_{\pi}(s,a) $。$\tilde{r}$ 即时奖励向量 $\tilde{r} = \sum_{r \in \mathcal{R}} p(r|s,a)r $。 $P$ 是状态迁移矩阵 $[P]_{(s,a),s'} = p(s'|s,a)$。$\Pi$ 是分块对角矩阵，其中每个分块是一个 $1 × |\mathcal{A}|$ 向量，$\Pi_{s', (s,a)} = \pi(a'|s')$，而 $\Pi$ 的其他项为零。
+
+与基于状态价值定义的贝尔曼方程相比，基于动作价值定义的方程具有一些独特特征。例如，$\tilde{r}$ 和 $P$ 与策略无关，仅由系统模型决定。策略嵌入在 $\Pi$ 中。
 
 ## 参考文献
 - https://github.com/MathFoundationRL/Book-Mathematical-Foundation-of-Reinforcement-Learning
