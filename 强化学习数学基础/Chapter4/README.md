@@ -79,7 +79,7 @@ $$ v_k(s) \rightarrow q_k(s,a) \rightarrow new\ greedy\ policy\ \pi_{k+1}(s) \ri
 
 使用如下 $2 \times 2$ 的网格世界来做示例。
 
-目标是 $s4$，奖励 $r_{boundary} = r_{forbidden} = -1$， $r_{target} = 1$，其他 $r_{other} = 0$。折扣因子 $\gamma = 0.9$。
+目标是 $s4$，即时奖励 $r_{boundary} = r_{forbidden} = -1$， $r_{target} = 1$，其他 $r_{other} = 0$。折扣因子 $\gamma = 0.9$。
 
 ![](./assets/chapter4_value_iteration_example.png)
 
@@ -100,7 +100,7 @@ $$ v_k(s) \rightarrow q_k(s,a) \rightarrow new\ greedy\ policy\ \pi_{k+1}(s) \ri
 
   $$ \pi_1(a_5|s_1) = 1, \pi_1(a_3|s_2) = 1, \pi_1(a_2|s_3) = 1, \pi_1(a_5|s_4) = 1 $$
 
-  其中 $\pi_1(a_5|s_1)$ 是随机选择的，假定这么选。
+  其中 $\pi_1(a_5|s_1)$ 是随机选择的，假定这里选 $a_5$。
 
 - 价值更新
   价值 $v_1$ 的获得是通过对每一个状态 $s$ 的状态价值更新为最大的 $q(s,a)$。因此得到：
@@ -118,7 +118,7 @@ $$ v_k(s) \rightarrow q_k(s,a) \rightarrow new\ greedy\ policy\ \pi_{k+1}(s) \ri
 - 策略更新
   策略 $\pi_2$ 是对每个状态 $s$ 选择最大 $q(s,a)$ 的动作，因此得到
 
-  $$ \pi_1(a_3|s_1) = 1,\ \pi_1(a_3|s_2) = 1,\ \pi_1(a_2|s_3) = 1,\ \pi_1(a_5|s_4) = 1 $$
+  $$ \pi_2(a_3|s_1) = 1,\ \pi_2(a_3|s_2) = 1,\ \pi_2(a_2|s_3) = 1,\ \pi_2(a_5|s_4) = 1 $$
 
 - 价值更新
   价值 $v_2$ 的获得是通过对每一个状态 $s$ 的状态价值更新为最大的 $q(s,a)$。因此得到：
