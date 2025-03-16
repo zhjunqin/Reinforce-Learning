@@ -126,3 +126,25 @@ $$ v_k(s) \rightarrow q_k(s,a) \rightarrow new\ greedy\ policy\ \pi_{k+1}(s) \ri
   $$ v_2(s_1) = \gamma 1,\ v_2(s_2) = 1+\gamma 1,\ v_2(s_3) = 1+\gamma1,\ v_2(s_4) = 1+\gamma 1 $$
 
 可以看到策略 $\pi_2$ 已经是最优策略。
+
+## 策略迭代（Policy iteration）
+
+与价值迭代不同，策略迭代不是为了直接求解贝尔曼最优方程。但是，它与价值迭代有着密切的关系。
+
+### 矩阵向量的形式
+
+每个迭代有两个步骤。
+
+#### 1. 策略评估（policy evaluation）
+
+这个步骤是评估一个给定的策略，计算其对应的状态价值。也就是求解如下贝尔曼方程：
+
+$$ v_{\pi_k} = r_{\pi_k} + \gamma P_{\pi_k} v_{\pi_k} $$ 
+
+这里 $\pi_k$ 是上一轮迭代得到的策略。$v_{\pi_k}$ 是该策略的状态价值。$r_{\pi_k}$ 和 $P_{\pi_k}$ 来自系统模型。
+
+#### 2. 策略改进（policy improvement）
+
+这个步骤是对策略进行改进。上个步骤中的 $v_{\pi_k}$ 计算出来后，可以通过如下的方式得到新的策略 $\pi_{k+1}$：
+
+$$ \pi_{k+1}= \argmax_\pi (r_{\pi} + \gamma P_{\pi} v_{\pi_k}) $$ 
