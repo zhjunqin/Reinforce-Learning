@@ -148,3 +148,51 @@ $$ v_{\pi_k} = r_{\pi_k} + \gamma P_{\pi_k} v_{\pi_k} $$
 这个步骤是对策略进行改进。上个步骤中的 $v_{\pi_k}$ 计算出来后，可以通过如下的方式得到新的策略 $\pi_{k+1}$：
 
 $$ \pi_{k+1}= \argmax_\pi (r_{\pi} + \gamma P_{\pi} v_{\pi_k}) $$ 
+
+### 逐个元素的形式
+
+#### 1. 策略评估（policy evaluation）
+
+通过如下逐个元素迭代的方式来从 $ v_{\pi_k} = r_{\pi_k} + \gamma P_{\pi_k} v_{\pi_k} $ 中求解 $v_{\pi_k}$ 
+
+$$ v^{j+1}_{\pi_k}(s) = \sum_{a} \pi_k(a|s) \left(\sum_{r} p(r|s,a)r + \gamma \sum_{s'} p(s'|s,a) v^{(j)}_{\pi_k}(s')\right), \forall s \in S $$
+
+这里 $j=0,1,2,...$
+
+#### 2. 策略改进（policy improvement）
+
+这个步骤是对策略进行改进。逐个元素的形式为：
+
+$$ \pi_{k+1}(s) = \argmax_\pi \sum_{a} \pi(a|s) \left(\sum_{r} p(r|s,a)r + \gamma \sum_{s'} p(s'|s,a) v_{\pi_k}(s')\right), \forall s \in S $$
+
+括号中为 $q_{\pi_k}(s,a)$，是策略 $\pi_k$ 的动作价值。
+
+$$ q_{\pi_k}(s,a) = \sum_{r} p(r|s,a)r + \gamma \sum_{s'} p(s'|s,a) v_{\pi_k}(s') $$
+
+令 $ a^*_k(s) = \argmax_a q_{\pi_k}(s,a)$，因此得到贪心最优策略：
+
+$$
+\pi_{k+1}(a|s) = 
+\begin{cases}
+1, & a = a^*_k(s), \\
+0, & a \neq a^*_k(s).
+\end{cases}$$
+
+### 算法步骤
+
+算法步骤如下图：
+
+![](./assets/chapter4_policy_iteration.png)
+
+从图中可以看出，整个迭代的步骤中嵌套了一个 **Policy evaluation** 步骤也是一个迭代的过程。
+
+**Policy evaluation** 的迭代步骤其实就是第二章中状态价值贝尔曼方程的迭代过程。
+
+
+## 截断策略迭代（Truncated policy iteration）
+
+接下来，我们介绍一种更通用的算法，称为截断策略迭代（Truncated policy iteration）。
+
+![](./assets/chapter4_trunctated_policy_iteration.png)
+
+比较上面的迭代算法，可以看到，价值迭代其实就是 $j_{truncate} = 1$ 的情况，策略迭代就是 $j_{truncated} = \infin $ 的情况。因此价值迭代和策略迭代算法是截断策略迭代算法的两种特殊情况。
