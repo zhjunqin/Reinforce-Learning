@@ -188,6 +188,13 @@ $$
 
 **Policy evaluation** 的迭代步骤其实就是第二章中状态价值贝尔曼方程的迭代过程。
 
+### 示例说明
+
+给定一个 $ 5\times 5 $ 的网格世界，目标是 $(4,3)$，即时奖励 $r_{boundary} = -1$, $r_{forbidden} = -10$， $r_{target} = 1$，其他 $r_{other} = 0$。折扣因子 $\gamma = 0.9$。
+
+策略迭代算法可以从初始的随机策略，最终收敛到最优策略。
+
+![](./assets/chapter4_policy_iteration_example.png)
 
 ## 截断策略迭代（Truncated policy iteration）
 
