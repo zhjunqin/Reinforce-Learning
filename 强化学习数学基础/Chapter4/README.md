@@ -209,9 +209,13 @@ $$
 
 比较上面的迭代算法，可以看到，价值迭代其实就是 $j_{truncate} = 1$ 的情况，策略迭代就是 $j_{truncated} = \infin $ 的情况。因此价值迭代和策略迭代算法是截断策略迭代算法的两种特殊情况。
 
+三种算法迭代次数对应的收敛速度如下图：
+
+![](./assets/chapter4_trunctated_policy_iteration_example.png)
+
 ## 实现代码
 
-参考代码实现[bellman_iteration](./bellman_iteration.py)
+参考代码实现 [bellman_iteration](./bellman_iteration.py)。
 
 代码输出：
 
