@@ -10,3 +10,4 @@
 - [Chapter2：状态价值和贝尔曼方程](./Chapter2/README.md)
 - [Chapter3：最优状态价值和贝尔曼最优方程](./Chapter3/RAEDME.md)
 - [Chapter4：价值迭代和策略迭代](./Chapter4/README.md)
+- [Chapter5：蒙特卡洛方法](./Chapter5/README.md)
