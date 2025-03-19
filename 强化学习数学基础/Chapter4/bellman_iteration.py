@@ -102,7 +102,8 @@ def get_next_state_and_reward(state, action):
 
 
 # 贝尔曼价值迭代
-def bellman_value_iteration(value_k, policy, epsilon):
+def bellman_value_iteration(value_k, policy, epsilon, j_truncated=-1):
+    j_iter = 0
     while True:
         value_k_1 = np.copy(value_k)
         delta = 0
@@ -119,6 +120,9 @@ def bellman_value_iteration(value_k, policy, epsilon):
         value_k = value_k_1
         # 如果变化量小于阈值，则认为收敛，退出迭代
         if delta < epsilon:
+            break
+        j_iter += 1
+        if j_truncated > 0 and j_iter >= j_truncated:
             break
     return value_k
 
@@ -197,10 +201,47 @@ def policy_iteration(value_0, policy_0, q_table):
     return value_k, policy_k, q_table_k, iteration_count
 
 
+# 截断策略迭代算法
+def truncted_policy_iteration(value_0, policy_0, q_table, j_truncated):
+    value_k = np.copy(value_0)
+    policy_k = copy.deepcopy(policy_0)
+    q_table_k = np.copy(q_table)
+    iteration_count = 0
+    while True:
+        value_k_1 = np.copy(value_k)
+        delta = 0
+        # 价值迭代
+        value_k = bellman_value_iteration(
+            value_k, policy_k, epsilon, j_truncated=j_truncated
+        )
+        for i in range(grid_size[0]):
+            for j in range(grid_size[1]):
+                state = (i, j)
+                for action in actions:
+                    next_state, reward = get_next_state_and_reward(state, action)
+                    # 更新动作价值函数
+                    q_table_k[i][j][action_to_index_mapping[action]] = (
+                        reward + gamma * value_k[next_state]
+                    )
+                # 获取最大动作价值函数和对应的动作
+                max_q_value = np.max(q_table_k[i][j])
+                max_q_action = np.argmax(q_table_k[i][j])
+                # 更新策略
+                policy_k[state] = index_to_action_mapping[max_q_action]
+                # 更新状态价值函数
+                value_k[i][j] = max_q_value
+                # 更新最大变化量
+                delta = max(delta, abs(value_k[i][j] - value_k_1[i][j]))
+
+        # 如果变化量小于阈值，则认为收敛，退出迭代
+        iteration_count += 1
+        if delta < epsilon:
+            break
+
+    return value_k, policy_k, q_table_k, iteration_count
+
+
 def print_result(value_k, policy_k):
-    # 输出奖励矩阵
-    print("奖励矩阵：")
-    print(rewards)
     # 输出最终的价值函数矩阵
     print("最终的价值函数矩阵：")
     print(np.round(value_k, decimals=1))
@@ -212,15 +253,26 @@ def print_result(value_k, policy_k):
         print()
 
 
+# 输出奖励矩阵
+print("========= 奖励矩阵 ==========")
+print(rewards)
+
 # 执行价值迭代
 print("========= 价值迭代 ==========")
 value_k, policy_k, q_table_k, iteration_count = value_iteration(value, policy, q_table)
 print(f"迭代次数：{iteration_count}")
 print_result(value_k, policy_k)
 
-
 # 执行策略迭代
 print("========= 策略迭代 ==========")
 value_k, policy_k, q_table_k, iteration_count = policy_iteration(value, policy, q_table)
+print(f"迭代次数：{iteration_count}")
+print_result(value_k, policy_k)
+
+# 执行截断策略迭代
+print("========= 截断策略迭代 ==========")
+value_k, policy_k, q_table_k, iteration_count = truncted_policy_iteration(
+    value, policy, q_table, j_truncated=8
+)
 print(f"迭代次数：{iteration_count}")
 print_result(value_k, policy_k)
