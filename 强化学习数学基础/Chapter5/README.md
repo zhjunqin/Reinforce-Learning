@@ -143,7 +143,7 @@ $$ s_1 \xrightarrow{a_2} s_2 \xrightarrow{a_4} s_1 \xrightarrow{a_2} s_2 \xright
 
 ### every-visit
 
-如果我们计算 state-action 对的每次访问的情况，这样的策略称为 `every-visit`。
+如果我们计算 state-action 对的每次访问的情况，这样的策略称为 `every-visit`。也就是一个回合中如果一个 state-action 对重复出现，则将重复出现的情况做平均。
 
 ### 算法描述
 
@@ -151,13 +151,57 @@ $$ s_1 \xrightarrow{a_2} s_2 \xrightarrow{a_4} s_1 \xrightarrow{a_2} s_2 \xright
 
 ![](./assets/chapter5_mc_exploring_starts.png)
 
+值得注意的是，算法中是从一个回合的数据后面往前计算，这样可以提高计算的效率。
+
 `MC Exploring Statts` 策略可以避免 Agent 必须等到收集完所有回合后才能更新估计值，就是使用单个回合的回报来近似相应的动作价值。这样，当我们采集到一个回合的样本后，我们可以立即获得一个粗略的估计。然后，可以逐个回合地改进策略。
 
-但是 `exploring starts` 条件需要从每个 state-action 对开始的足够多的回合。只有对每一个状态-动作对都进行了很好的探索，我们才能准确估计它们的动作价值（根据大数定律），从而成功找到最优策略。但是，在实际中很难满足此条件，尤其是那些涉及与环境物理交互的应用程序。
+但是 `exploring starts` 条件需要从每个 state-action 对开始的足够多的回合。只有对每一个 state-action 对都进行了很好的探索，我们才能准确估计它们的动作价值（根据大数定律），从而成功找到最优策略。但是，在实际中很难满足此条件，尤其是那些涉及与环境物理交互的应用程序。
 
 
-## MC $\epsilon$-Greedy: 不需要 exploring starts 的学习方式
+## MC $\epsilon\text{-greedy}$: 不需要 exploring starts 的学习方式
 
-### $\epsilon$-greedy 策略
+接下来，我们通过移除 `exploring starts` 条件来扩展 MC Exploring Starts 算法。这个条件其实要求每个 state-action 对都可以被足够多次地访问，这也是基于软策略（soft policies）来实现的。
+
+### $\epsilon\text{-greedy}$ 策略
+
+$\epsilon\text{-greedy}$ 策略是一种随机策略，它有更高的几率选择 greedy 动作，并且采取任何其他作的非零概率相同。在这里，greedy 动作是指具有最大动作价值的动作。假设 $\epsilon \in [0,1]$，相应的 $\epsilon\text{-greedy}$ 策略具有以下形式：
+
+$$
+\pi(a|s) =
+\begin{cases} 
+1 - \frac{\epsilon}{|\mathcal{A}(s)|}(|\mathcal{A}(s)| - 1) = 1 -{\epsilon} + \frac{\epsilon}{|\mathcal{A}(s)|}, & \text{for the greedy action,} \\ 
+\frac{\epsilon}{|\mathcal{A}(s)|}, & \text{for the other } |\mathcal{A}(s)| - 1 \text{ actions.}
+\end{cases}
+$$
+
+这里 $|\mathcal{A}(s)|$ 表示和状态 $s$ 相关联的动作数量。
+
+由于 $\epsilon \in [0,1]$，则可知上面式子的值总是高于下面，因此采取 greedy 动作的概率总是高于其他的动作。
+
+当 $\epsilon = 0$，$\epsilon\text{-greedy}$ 只会采取 greedy 动作。当 $\epsilon = 1$，所有动作的概率都相同为 $\frac{1}{|\mathcal{A}(s)|}$。
+
+如何生成这样的一个随机策略？
+
+可以首先在均匀分布 $[0,1]$ 之间生成一个随机数 $x$，如果 $x \geq \epsilon$，则选择 greedy 动作（$1 - \epsilon$ 的概率）。如果 $x \lt \epsilon$，则在所有的动作中随机选择一个（这个里面包含了 greedy 动作），所有动作的概率都为 $\frac{\epsilon}{|\mathcal{A}(s)|}$。可以表示为：
+
+$$
+\pi(a|s) =
+\begin{cases} 
+ 1 -{\epsilon}, & \text{for the greedy action,} \\ 
+\frac{\epsilon}{|\mathcal{A}(s)|}, & \text{for all } |\mathcal{A}(s)|  \text{ actions.}
+\end{cases}
+$$
+
+### 算法描述
+
+$MC\ \epsilon\text{-}Greedy $ 算法如下：
 
 ![](./assets/chapter5_epislon_greedy.png)
+
+图片中 `Policy improvement` 应该可以放到循环外。
+
+### 探索（Exploration）和利用（Exploitation）
+
+探索（Exploration）和利用（Exploitation）构成了强化学习的基本权衡（tradeoff）。在这里，探索意味着策略可能会执行尽可能多的作。这样，所有的状态-动作都可以被很好地访问和评估。利用意味着改进的策略应该采取具有最大动作价值的贪婪动作。但是，由于当前时刻获得的动作价值可能由于探索不足而不准确，我们应该在进行开发的同时不断探索，以免错过最优动作。
+
+$\epsilon\text{-greedy}$ 提供了一个可以平衡探索（Exploration）和利用（Exploitation）的方法。一方面有比较高的概率来选择 greedy 动作（利用已有的经验），另外一方面可以有一定的概率来选择其他动作（探索其他未访问过的动作）。
