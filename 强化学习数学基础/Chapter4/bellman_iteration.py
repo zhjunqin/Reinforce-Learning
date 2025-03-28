@@ -53,8 +53,6 @@ action_to_index_mapping = {
     "stay": 4,
 }
 
-q_table = np.zeros((grid_size[0], grid_size[1], len(actions)))
-
 # 根据图片定义策略（每个格子对应的动作）
 policy = {
     (0, 0): "stay",
@@ -86,6 +84,9 @@ policy = {
 
 # 初始化价值函数矩阵
 value = np.zeros(grid_size)
+
+# 初始化动作价值函数矩阵
+q_table = np.zeros((grid_size[0], grid_size[1], len(actions)))
 
 
 # 辅助函数：获取下一个状态和奖励
