@@ -8,13 +8,13 @@
 
 这里给出一个示例，展示如何将一个非增量的算法转换成一个增量的算法。
 
-考虑一个随机变量 $X$，它从表示为 $\mathcal{X}$ 的有限实数集中获取值。我们的目标是计算 $X$ 的期望： $E[X]$。
+考虑一个随机变量 $X$，它从表示为 $\mathcal{X}$ 的有限实数集中获取值。我们的目标是计算 $X$ 的期望： $\mathbb{E}[X]$。
 
 如果随机变量 $X$ 的概率分布是未知的，假定我们有一系列独立同分布的样本 $\{x_i\}^n_{i=1}$，那么 $X$ 的期望可以近似为
 
-$$ E[X] \approx \bar{x} = \frac{1}{n} \sum^n_{i=1} x_i$$
+$$ \mathbb{E}[X] \approx \bar{x} = \frac{1}{n} \sum^n_{i=1} x_i$$
 
-当 $ n \rightarrow \infin $ 时，$ \bar{x} \rightarrow E[X] $。
+当 $ n \rightarrow \infin $ 时，$ \bar{x} \rightarrow \mathbb{E}[X] $。
 
 这个近似值是蒙特卡洛估计的基本概念。这种方法的缺点是，如果样本数量很大，我们可能需要等待很长时间才能收集到所有样本。下面介绍增量的方法。
 
@@ -28,4 +28,24 @@ $$ w_{k}= \frac{1}{k-1} \sum^{k-1}_{i=1} x_i, \ k=2,3,...$$
 
 因此 $w_{k+1}$ 可以使用 $w_{k}$ 来表示：
 
-$$ w_{k+1}= \frac{1}{k} \sum^k_{i=1} x_i = \frac{1}{k} ( \sum^{k-1}_{i=1} x_i + x_k ) =  \frac{1}{k} ( (k-1) \cdot w_k + x_k ) =   w_k- \frac{1}{k} ( w_k - x_k ) $$ 
+$$\begin{aligned}
+w_{k+1}= \frac{1}{k} \sum^k_{i=1} x_i &= \frac{1}{k} ( \sum^{k-1}_{i=1} x_i + x_k ) \\
+&=  \frac{1}{k} ( (k-1) \cdot w_k + x_k ) \\
+&=  w_k- \frac{1}{k} ( w_k - x_k )
+\end{aligned}$$ 
+
+因此我们得到如下增量的算法：
+
+$$ w_{k+1}= w_k- \frac{1}{k} ( w_k - x_k ) $$
+
+可以验证如下：
+
+![](./assets/chapter6_mean_estimation.png)
+
+该算法的优点是每次收到样本时都可以立即计算平均值。
+
+进一步，考虑一个更通用表达式的算法：
+
+$$ w_{k+1}= w_k-  \alpha_k ( w_k - x_k ) $$
+
+我们将在下一节中说明，如果 $\{\alpha_k\}$ 满足一些温和的条件，当 $ k \rightarrow \infin $ 时，$ w_k \rightarrow \mathbb{E}[X] $。
