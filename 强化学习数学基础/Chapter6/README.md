@@ -179,6 +179,7 @@ Root found: 1.0010032332524639
   - 示例函数 $g(w) = tanh(w −1)$ 满足这个条件，但是 $g(w) = w^3 -5$ 就不满足。
 - 条件二中 $\sum_{k=1}^\infty a_k^2 < \infty$ 表明 $ \lim_{n \rightarrow \infty}\sum_{k=1}^n a_k^2 $ 是收敛并有上界的。条件 $\sum_{k=1}^\infty a_k$ 表明 $ \lim_{n \rightarrow \infty}\sum_{k=1}^n a_k $ 不收敛并趋近于无穷。它要求 $a_k$ 不应太快收敛到 $0$。
 - 条件三不需要观测误差 $\eta$ 为高斯误差。一种特殊的情况是 $\{\eta_k\}$ 是独立同分布的随机序列，同时满足 $\mathbb{E}[\eta_k ] = 0$ 和 $\mathbb{E}[\eta^2_k ] = 0$。这种情况下由于 $\eta_k$ 独立于 $\mathcal{H}_k$，因此满足第三个条件。
+- 
 
 ## 随机梯度下降
 
